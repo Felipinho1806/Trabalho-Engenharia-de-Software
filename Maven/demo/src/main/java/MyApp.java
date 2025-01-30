@@ -1,5 +1,5 @@
-
-
+import BancoDeDados.Login;
+import BancoDeDados.Cadastro;
 import java.util.Scanner;
 
 public class MyApp {
@@ -11,10 +11,10 @@ public class MyApp {
         String resposta = sc.nextLine();
 
         if(resposta.toLowerCase().equals("n")) {
-            InsertBd.main(args);
+            Cadastro.main(args);
         }
         else {
-            Conexao.main(args);
+            Login.main(args);
         }
     }
 }
