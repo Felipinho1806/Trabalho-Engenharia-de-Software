@@ -1,4 +1,4 @@
-
+import BancoDeDados.Usuario;
 
 public class Funcionario extends Usuario {
     

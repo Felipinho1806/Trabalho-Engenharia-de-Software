@@ -2,7 +2,7 @@ package BancoDeDados;
 
 import java.util.Scanner;
 
-public class Login extends Conexao {
+public class Login extends Usuario {
     
     public static void main(String[] args) {
 
