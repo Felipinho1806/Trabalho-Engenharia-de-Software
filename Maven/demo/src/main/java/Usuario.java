@@ -1,10 +1,10 @@
-package BancoDeDados;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import BancoDeDados.Conexao;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class Usuario {
@@ -59,11 +59,11 @@ public class Usuario {
         System.out.println("Cliente deslogado.");
     }
 
-    public void cadastrarCliente(String senha, String email) {
+    /*public void cadastroCliente(String senha, String email) {
         setEmail(email);
         setSenha(senha);
         System.out.println("Cliente cadastrado.");
-    }
+    } */
 
     public void solicitarReserva(String localReserva, int idReserva) {
         setId(idReserva);
@@ -132,7 +132,7 @@ public class Usuario {
 
                 // Exibir mensagem de sucesso
                 if (linhasAfetadas > 0) {
-                    System.out.println("Nova linha inserida com sucesso!");
+                    System.out.println("Cadastro realizado com sucesso!");
                     return 0;
                 }
             }
@@ -153,6 +153,45 @@ public class Usuario {
         }
     return 0;
     
+    }
+
+     public int excluirUsuario(int id_usuario){
+        Connection conexao = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Obtendo a conexão do banco de dados
+            conexao = Conexao.getConnection();
+
+            //exclui modal pelo id
+            String excluirSQL = "DELETE FROM usuario WHERE id_usuario = ?";
+
+            // Criar o PreparedStatement com retorno de chave gerada
+            pstmt = conexao.prepareStatement(excluirSQL);
+            pstmt.setInt(1, id_usuario);
+            // Executar a instrução SQL
+            int linhasAfetadas = pstmt.executeUpdate();
+
+            // Se a inserção foi bem-sucedida, retorna o ID gerado
+            if (linhasAfetadas > 0) {
+                System.out.println("Usuário excluido");
+                return 0;
+            } else{
+                System.out.println("O id digitado não foi encontrado");
+                return 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1; // Erro ao excluir
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conexao != null) conexao.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
 }

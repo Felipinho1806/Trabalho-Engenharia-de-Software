@@ -1,5 +1,3 @@
-import BancoDeDados.Usuario;
-
 public class Funcionario extends Usuario {
     
     public void realizarVenda() {

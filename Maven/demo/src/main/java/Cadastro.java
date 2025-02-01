@@ -1,5 +1,3 @@
-package BancoDeDados;
-
 import java.util.Scanner;
 
 public class Cadastro extends Usuario {

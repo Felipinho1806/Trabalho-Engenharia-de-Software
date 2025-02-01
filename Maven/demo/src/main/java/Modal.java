@@ -1,11 +1,9 @@
-package BancoDeDados;
-
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import io.github.cdimascio.dotenv.Dotenv;
+import BancoDeDados.Conexao;
 
 public class Modal {
     private int idProprietario;
@@ -13,11 +11,6 @@ public class Modal {
     private String tipo;
     private String categoria;
     private String marca;
-
-    private static Dotenv dotenv = Dotenv.load();
-    private static String dbUrl = dotenv.get("DB_URL");
-    private static String dbUser = dotenv.get("DB_USER");
-    private static String dbPassword = dotenv.get("DB_PASSWORD");
 
     public int getIdProprietario() {
         return idProprietario;
@@ -54,29 +47,25 @@ public class Modal {
         this.marca = marca;
     }
 
-    public static int cadastroModal(int Capacidade, String Tipo, String Categoria, String Marca) {
+    public int cadastroModal(int capacidade, String tipo, String categoria, String marca) {
         Connection conexao = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
-            // Carregar o driver do MySQL
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Obtendo a conexão do banco de dados
+            conexao = Conexao.getConnection();
 
-            // Estabelecer a conexão com o banco de dados
-            conexao = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-
-            // Criar a instrução SQL para inserir dados
             String inserirSQL = "INSERT INTO modal (capacidade, tipo, categoria, marca) VALUES (?, ?, ?, ?)";
 
             // Criar o PreparedStatement com retorno de chave gerada
             pstmt = conexao.prepareStatement(inserirSQL, PreparedStatement.RETURN_GENERATED_KEYS);
 
             // Definir os valores dos parâmetros
-            pstmt.setInt(1, Capacidade);
-            pstmt.setString(2, Tipo);
-            pstmt.setString(3, Categoria);
-            pstmt.setString(4, Marca);
+            pstmt.setInt(1, capacidade);
+            pstmt.setString(2, tipo);
+            pstmt.setString(3, categoria);
+            pstmt.setString(4, marca);
 
             // Executar a instrução SQL
             int linhasAfetadas = pstmt.executeUpdate();
@@ -89,18 +78,56 @@ public class Modal {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (rs != null) rs.close();
                 if (pstmt != null) pstmt.close();
                 if (conexao != null) conexao.close();
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
         return -1; // Retorna -1 em caso de falha na inserção
     }
 
+    public int excluirModal(int id_modal){
+        Connection conexao = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // Obtendo a conexão do banco de dados
+            conexao = Conexao.getConnection();
+
+            //exclui modal pelo id
+            String excluirSQL = "DELETE FROM modal WHERE id_modal = ?";
+
+            // Criar o PreparedStatement com retorno de chave gerada
+            pstmt = conexao.prepareStatement(excluirSQL);
+            pstmt.setInt(1, id_modal);
+            // Executar a instrução SQL
+            int linhasAfetadas = pstmt.executeUpdate();
+
+            // inserção foi bem-sucedida
+            if (linhasAfetadas > 0) {
+                System.out.println("Modal excluido");    
+                return 0;          
+            } else{
+                System.out.println("O id digitado não foi encontrado");
+                return 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1; // Erro ao excluir
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conexao != null) conexao.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }
