@@ -100,9 +100,8 @@ public class MyApp {
 
         l1.excluirLocal(id_local);
 
-
-
-
+        //Teste do método
+        Usuario.procurarUsuario(1);
 
     }
 }

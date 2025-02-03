@@ -194,4 +194,41 @@ public class Usuario {
         }
     }
 
+    public static void procurarUsuario(int id_usuario) {
+        Connection conexao = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Obtendo a conexão do banco de dados
+            conexao = Conexao.getConnection();
+
+            //exclui modal pelo id
+            String procurarSQL = "SELECT * FROM usuario WHERE id_usuario = ?";
+
+            // Criar o PreparedStatement com retorno de chave gerada
+            pstmt = conexao.prepareStatement(procurarSQL);
+            pstmt.setInt(1, id_usuario);
+            // Executar a instrução SQL
+            rs = pstmt.executeQuery();
+
+            // Se a inserção foi bem-sucedida, retorna o ID gerado
+            if (rs.next()) {
+                System.out.println("Usuário encontrado: " + rs.getString("nome"));
+            } else{
+                System.out.println("O id digitado não foi encontrado");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conexao != null) conexao.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }
